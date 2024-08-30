@@ -6,8 +6,9 @@ import {
   TextField,
   Button,
   Card,
+  CardContent,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import theme from "../theme";
 import { ThemeProvider } from "@emotion/react";
 import Footer from "../footpage";
@@ -16,8 +17,7 @@ import Nav from "../Nav";
 function page() {
   const [message, setMessage] = useState("");
   const [flashcards, setFlashcards] = useState([]);
-  const [generateOrNot, setGenerateOrNot] = useState(false);
-  const [flipped, setFlipped] = useState(false);
+  const [flipped, setFlipped] = useState([]);
 
   const handleSubmit = async () => {
     const response = await fetch("api/generate", {
@@ -26,8 +26,16 @@ function page() {
     });
     const data = await response.json(); // Read and parse the JSON response
     console.log("data is: ", data);
-    setGenerateOrNot(true);
+    // setGenerateOrNot(true);
     setFlashcards(data);
+    // setFlashcards(cards);
+    setFlipped(Array(data.length).fill(false));
+  };
+
+  const handleCardClick = (index) => {
+    setFlipped((prevFlipped) =>
+      prevFlipped.map((flip, i) => (i === index ? !flip : flip))
+    );
   };
 
   return (
@@ -70,7 +78,6 @@ function page() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="For example, I'd like to know more topics of fruit to talk about "
-              // isRequired="true"
               multiline
               rows={7}
               sx={{
@@ -111,7 +118,8 @@ function page() {
           sx={{
             display: "grid",
             mt: "50px",
-            width: { xs: "auto", md: "1000px" },
+            width: { xs: "auto", md: "900px" },
+            height: "auto",
             gridTemplateColumns: {
               xs: "repeat(2, 1fr)", // 1 column on extra-small screens
               sm: "repeat(2, 1fr)", // 2 columns on small screens
@@ -120,24 +128,29 @@ function page() {
             gap: "10px",
           }}
         >
-          {flashcards.map((flashcard, index) =>
-            flipped ? (
-              <Card
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "#403D76",
-                  borderRadius: "20px",
-                }}
-              >
-                {" "}
-                {flashcard.back}
-              </Card>
-            ) : (
-              <Card sx={{ backgroundColor: "#ffffff", color: "#403D76" }}>
-                {flashcard.front}
-              </Card>
-            )
-          )}
+          {flashcards.map((flashcard, index) => (
+            <Card
+              key={index}
+              onClick={() => handleCardClick(index)}
+              sx={{
+                backgroundColor: "#ffffff",
+                color: "#403D76",
+                borderRadius: "5px",
+                width: "300px",
+                height: "200px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                cursor: "pointer",
+                padding: "5px",
+              }}
+            >
+              <CardContent>
+                {!flipped[index] ? flashcard.front : flashcard.back}
+              </CardContent>
+            </Card>
+          ))}
         </Box>
       </Box>
       <Footer />

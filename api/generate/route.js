@@ -9,6 +9,7 @@ The flashcards should:
 - Be clear, concise, and focused on aiding memory retention.
 - Include varied types of questions such as multiple-choice, fill-in-the-blank, and true/false.
 - Consider different learning levels, from beginner to advanced.
+- Be question and answer without any blank in the front side of the card. 
 
 Remember, only generate 9 flashcards.
 Your goal is to assist users in mastering their subject matter through effective repetition and self-testing.
